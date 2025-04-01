@@ -18,7 +18,6 @@
 .env.test.local
 .env.production.local
 /src/config/alphaVantage.js
-/src/config/twelvedata.js
 
 npm-debug.log*
 yarn-debug.log*
