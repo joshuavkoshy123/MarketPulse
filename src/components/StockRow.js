@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 //import { alphaVantage } from '../config/alphaVantage.js';
 import { stock } from '../resources/stock.js';
+import './StockRow.css'; 
 
 class StockRow extends Component {
+
+    //let apiCalled = false;
 
     constructor(props){
         super(props);
         this.state = {
             data: {}
         }
+        this.firstApiCalled = false;
+        this.updateApiCalled = false;
     }
 
     changeStyle() {
@@ -34,14 +39,25 @@ class StockRow extends Component {
     }
 
     componentDidMount() {
-        stock.latestPrice(this.props.ticker, this.applyData.bind(this));
-        //.catch(error => console.error("API Fetch Error:", error));
+        if (!this.firstApiCalled) {
+            this.firstApiCalled = true;
+            stock.latestPrice(this.props.ticker, this.applyData.bind(this));
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.ticker !== this.props.ticker) {
+            stock.latestPrice(this.props.ticker, this.applyData.bind(this));
+        }
     }
 
     render() {
         return (
             <li className="list-group-item">
-                  <b>{this.props.ticker}</b> ${this.state.data ? Number(this.state.data.price).toFixed(2) : "Loading..."}
+                  <b className="stock-row" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }}>
+                    {this.props.ticker}
+                    </b> 
+                    ${this.state.data ? Number(this.state.data.price).toFixed(2) : "Loading..."}
                   <span className="change" style={this.changeStyle()}>
                   ${this.state.data ? Number(this.state.data.price_change).toFixed(2) : "Loading..."} ({this.state.data ? Number(this.state.data.percent_change).toFixed(2) : "Loading..."}%)
                   </span>
