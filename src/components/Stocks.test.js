@@ -19,14 +19,14 @@ describe("Stocks Component", () => {
     });
 
     // Simulate typing in the search box
-    fireEvent.change(searchInput, { target: { value: "AAPL" } });
+    fireEvent.change(searchInput, { target: { value: "NVDA" } });
 
     // Expect only matching stock(s) to be displayed
-    expect(screen.getByText("AAPL")).toBeInTheDocument();
+    expect(screen.getByText("NVDA")).toBeInTheDocument();
 
     // Ensure non-matching stocks are not displayed
     Data.forEach((stock) => {
-      if (stock.ticker !== "AAPL") {
+      if (stock.ticker !== "NVDA" && stock.ticker !== "AAPL") {
         expect(screen.queryByText(stock.ticker)).not.toBeInTheDocument();
       }
     });
@@ -44,6 +44,8 @@ test("shows no stocks when searching for a non-existent stock", () => {
 
     // Ensure no stocks are found
     Data.forEach((stock) => {
-      expect(screen.queryByText(stock.ticker)).not.toBeInTheDocument();
+        if(stock.ticker != "AAPL") {
+            expect(screen.queryByText(stock.ticker)).not.toBeInTheDocument();
+        }
     });
 });

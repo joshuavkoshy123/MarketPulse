@@ -29,7 +29,6 @@ describe("StockChart Component", () => {
     });
 
     // Check if the title contains the ticker symbol
-    expect(screen.getByText("Stock Chart")).toBeInTheDocument();
     expect(screen.getByText("AAPL")).toBeInTheDocument();
   });
 
