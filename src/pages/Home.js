@@ -15,7 +15,10 @@ function Home() {
                 `${url}${query}&language=en&domains=wsj.com,bloomberg.com,cnbc.com,ft.com,forbes.com&sortBy=publishedAt&apiKey=${API_KEY}`
             );
             const data = await res.json();
+            console.log(query);
+            console.log(data.articles);
             setArticles(data.articles || []);
+
         } catch (error) {
             console.error("Error fetching data:", error);
             setArticles([]);
@@ -49,12 +52,12 @@ function Home() {
                     </ul>
                 </nav>
 
-                {/* Mobile Menu Button */}
+                {/* Mobile Menu Button
                 <div className="menuBtn" onClick={() => setMenuOpen(!menuOpen)}>
                     <i className="fa-solid fa-bars"></i>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Menu 
                 <div className={`mobile ${menuOpen ? "open" : ""}`}>
                     <nav>
                         <ul>
@@ -65,7 +68,7 @@ function Home() {
                         </ul>
                     </nav>
 
-                    {/* Mobile Search */}
+                    {/* Mobile Search 
                     <div className="inputSearch">
                         <form onSubmit={(e) => {
                             e.preventDefault();
@@ -75,7 +78,7 @@ function Home() {
                             <span><i className="fa-solid fa-search"></i></span>
                         </form>
                     </div>
-                </div>
+                </div> */}
             </header>
 
             {/* Main News Content */}

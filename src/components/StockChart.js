@@ -35,7 +35,7 @@ class StockChart extends React.Component {
     render() {
         return (
             <div>
-                <h2>Stock Chart</h2>
+                <h2>{this.props.ticker}</h2>
                 <Plot
                     data={[
                     {
@@ -46,7 +46,7 @@ class StockChart extends React.Component {
                         marker: {color: 'blue'},
                     }
                     ]}
-                    layout={ {width: 720, height: 440, title: {text: this.props.ticker}} }
+                    layout={ {width: 720, height: 440, title: {text: `$${Number(this.state.stockChartYValues[0]).toFixed(2)}`}} }
                 />
             </div>
         )
