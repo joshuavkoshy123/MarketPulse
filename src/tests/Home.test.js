@@ -1,12 +1,11 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import Home from '../pages/Home';
 
-// Mock fetch globally
 global.fetch = jest.fn();
 
 describe('Home Component', () => {
     beforeEach(() => {
-        fetch.mockClear(); // Clear the mock before each test.
+        fetch.mockClear();
     });
 
     test('renders without crashing', () => {
@@ -33,7 +32,6 @@ describe('Home Component', () => {
 
         render(<Home />);
         
-        // Wait for the articles to appear
         await waitFor(() => expect(screen.getByText(/Test Article/i)).toBeInTheDocument());
         
         expect(screen.getByText(/Test Article/i)).toBeInTheDocument();
@@ -61,13 +59,11 @@ describe('Home Component', () => {
         
         render(<Home />);
         
-        // Simulate typing in the search input and submitting the form
         fireEvent.change(screen.getByPlaceholderText(/Search news.../i), {
             target: { value: searchQuery }
         });
         fireEvent.submit(screen.getByRole('button'));
 
-        // Wait for the fetch to complete and the articles to appear
         await waitFor(() => expect(screen.getByText(/Stocks News/i)).toBeInTheDocument());
         
         expect(screen.getByText(/Stocks News/i)).toBeInTheDocument();
