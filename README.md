@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## IMPORTANT!!!
+
+After pulling the repository, make sure to run "npm install" in the terminal to ensure all libraries and dependencies are installed before running the project. After that, simply run npm start to run the project in the browser and npm test to run the tests (in the terminal) as outlined below.
+
 ## Available Scripts
 
 In the project directory, you can run:
