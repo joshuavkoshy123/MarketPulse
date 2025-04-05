@@ -36,6 +36,7 @@ class StockChart extends React.Component {
         return (
             <div>
                 <h2>{this.props.ticker}</h2>
+                <h4>{this.props.name}</h4>
                 <Plot
                     data={[
                     {

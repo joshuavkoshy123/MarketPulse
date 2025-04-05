@@ -61,6 +61,7 @@ class StockRow extends Component {
                   <span className="change" style={this.changeStyle()}>
                   ${this.state.data ? Number(this.state.data.price_change).toFixed(2) : "Loading..."} ({this.state.data ? Number(this.state.data.percent_change).toFixed(2) : "Loading..."}%)
                   </span>
+                  <p>{this.props.name}</p>
             </li>
             // <tr>
             //     <td></td>

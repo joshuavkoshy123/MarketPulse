@@ -41,7 +41,7 @@ function Home() {
                         fetchData(searchInput.current.value);
                     }}>
                         <input ref={searchInput} type="text" placeholder="Search news..." />
-                        <button type="submit"><i className="fa-solid fa-search"></i></button>
+                        <button className="searchButton" type="submit"><i className="fa-solid fa-search"></i></button>
                     </form>
                     {/* Desktop Navigation */}
                     <ul className="desktopNav">

@@ -8,6 +8,7 @@ import Data from '../stock-data.json';
 
 function Stocks() {
   const [chartTicker, setChartTicker] = useState("AAPL");
+  const [chartName, setChartName] = useState("Apple Inc.");
   // let chartTicker = "";
   // const setChartTicker = (stock) => {
   //   console.log(stock.stock.stock_ticker);
@@ -18,6 +19,8 @@ function Stocks() {
     if (query === '') {
       return stock;
     } else if (stock.ticker.toLowerCase().includes(query.toLowerCase())) {
+      return stock;
+    } else if (stock.name.toLowerCase().includes(query.toLowerCase())) {
       return stock;
     }
   });
@@ -34,7 +37,7 @@ function Stocks() {
                 {
                   filteredStocks.slice(0, 5).map((stock, ticker) => (
                     <div className="box" key={ticker}>
-                      <StockRow ticker={stock.ticker} onClick={() => setChartTicker(stock.ticker)}/>
+                      <StockRow ticker={stock.ticker} name={stock.name} onClick={() => {setChartTicker(stock.ticker); setChartName(stock.name);}}/>
                     </div>
                   ))
                   // Data.map((stock) => (
@@ -53,7 +56,7 @@ function Stocks() {
           </div>
           <div className='col-md-8'>
             <div className="chart">
-              <StockChart ticker={chartTicker}></StockChart>
+              <StockChart ticker={chartTicker} name={chartName}></StockChart>
             </div>
           </div>
         </div>
