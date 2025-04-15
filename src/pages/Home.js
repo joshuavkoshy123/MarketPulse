@@ -1,5 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import './styles.css';
+import { doc, setDoc, arrayUnion } from "firebase/firestore";
+import React from "react";
+import { auth, db } from "../config/config";
 
 function Home() {
     const API_KEY = "86f36900809b4d6cb68317eed0bca8bb";
@@ -22,6 +25,36 @@ function Home() {
         } catch (error) {
             console.error("Error fetching data:", error);
             setArticles([]);
+        }
+    }
+
+    const addToFavorites = async (url, urlToImage, title, source, publishedAt, description) => {
+        
+        try {
+            const user = auth.currentUser;
+
+            if (!user) {
+                throw new Error("User not authenticated.");
+            }
+
+            const articleData = {
+                url: url,
+                urlToImage: urlToImage,
+                title: title,
+                source: source,
+                publishedAt: publishedAt,
+                description: description
+            };
+
+            const userDoc = doc(db, 'users', user.uid);
+
+            await setDoc(userDoc, {
+                favorites: arrayUnion(articleData)
+            }, { merge: true });
+        }
+        catch (error) {
+            console.error("There has been an error: ", error);
+            //setError("Failed to add stock to favorites");
         }
     }
 
@@ -97,6 +130,7 @@ function Home() {
                                     </div>
                                     <div className="desc">{article.description}</div>
                                 </a>
+                                <button onClick={() => addToFavorites(article.url, article.urlToImage, article.title, article.source.name, article.publishedAt, article.description)}>Add To Favorites</button>
                             </div>
                         )
                     ))

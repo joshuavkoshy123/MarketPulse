@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 //import { alphaVantage } from '../config/alphaVantage.js';
 import { stock } from '../resources/stock.js';
-import './StockRow.css'; 
+import './StockRow.css';
+import { auth, db } from '../config/config.js';
+import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 
 class StockRow extends Component {
 
@@ -14,6 +16,32 @@ class StockRow extends Component {
         }
         this.firstApiCalled = false;
         this.updateApiCalled = false;
+    }
+
+    addToFavorites = async (ticker, name) => {
+        
+        try {
+            const user = auth.currentUser;
+
+            if (!user) {
+                throw new Error("User not authenticated.");
+            }
+
+            const stockData = {
+                ticker: ticker,
+                name: name
+            };
+
+            const userDoc = doc(db, 'users', user.uid);
+
+            await setDoc(userDoc, {
+                favorites: arrayUnion(stockData)
+            }, { merge: true });
+        }
+        catch (error) {
+            console.error("There has been an error: ", error);
+            //setError("Failed to add stock to favorites");
+        }
     }
 
     changeStyle() {
@@ -62,6 +90,7 @@ class StockRow extends Component {
                   ${this.state.data ? Number(this.state.data.price_change).toFixed(2) : "Loading..."} ({this.state.data ? Number(this.state.data.percent_change).toFixed(2) : "Loading..."}%)
                   </span>
                   <p>{this.props.name}</p>
+                  <button onClick={() => this.addToFavorites(this.props.ticker, this.props.name)}>Add To Favorites</button>
             </li>
             // <tr>
             //     <td></td>
