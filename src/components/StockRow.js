@@ -4,6 +4,7 @@ import { stock } from '../resources/stock.js';
 import './StockRow.css';
 import { auth, db } from '../config/config.js';
 import { doc, setDoc, arrayUnion } from 'firebase/firestore';
+import { type } from '@testing-library/user-event/dist/type/index.js';
 
 class StockRow extends Component {
 
@@ -29,7 +30,8 @@ class StockRow extends Component {
 
             const stockData = {
                 ticker: ticker,
-                name: name
+                name: name,
+                type: "stock"
             };
 
             const userDoc = doc(db, 'users', user.uid);

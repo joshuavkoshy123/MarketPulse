@@ -43,7 +43,8 @@ function Home() {
                 title: title,
                 source: source,
                 publishedAt: publishedAt,
-                description: description
+                description: description,
+                type: "article"
             };
 
             const userDoc = doc(db, 'users', user.uid);
