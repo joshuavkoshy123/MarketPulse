@@ -82,22 +82,26 @@ class StockRow extends Component {
     render() {
         return (
             <li className="list-group-item">
-                  <b className="stock-row" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }}>
-                    {this.props.ticker}
-                    </b> 
-                    ${this.state.data ? Number(this.state.data.price).toFixed(2) : "Loading..."}
-                  <span className="change" style={this.changeStyle()}>
-                  ${this.state.data ? Number(this.state.data.price_change).toFixed(2) : "Loading..."} ({this.state.data ? Number(this.state.data.percent_change).toFixed(2) : "Loading..."}%)
-                  </span>
-                  <p>{this.props.name}</p>
-                  <button onClick={() => this.addToFavorites(this.props.ticker, this.props.name)}>Add To Favorites</button>
+                <div className="stock-info" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }}>
+                    <div className="stock-header">
+                        <b className="stock-ticker">{this.props.ticker}</b> 
+                        <span className="change" style={this.changeStyle()}>
+                            ${this.state.data ? Number(this.state.data.price_change).toFixed(2) : "Loading..."} ({this.state.data ? Number(this.state.data.percent_change).toFixed(2) : "Loading..."}%)
+                        </span>
+                    </div>
+                    <p className="stock-name">{this.props.name}</p>
+                    <div className="stock-price">${this.state.data ? Number(this.state.data.price).toFixed(2) : "Loading..."}</div>
+                </div>
+                <button 
+                    className="add-to-favorites-btn" 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        this.addToFavorites(this.props.ticker, this.props.name);
+                    }}
+                >
+                    Add To Favorites
+                </button>
             </li>
-            // <tr>
-            //     <td></td>
-            //     <td></td>
-            //     <td>{this.state.data ? this.state.data.date : "Loading..."}</td>
-            //     <td>{this.state.data ? this.state.data.percent_change : "Loading..."}</td>
-            // </tr>
         )
     }
 }

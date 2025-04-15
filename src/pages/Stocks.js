@@ -9,12 +9,8 @@ import Data from '../stock-data.json';
 function Stocks() {
   const [chartTicker, setChartTicker] = useState("AAPL");
   const [chartName, setChartName] = useState("Apple Inc.");
-  // let chartTicker = "";
-  // const setChartTicker = (stock) => {
-  //   console.log(stock.stock.stock_ticker);
-  //   chartTicker = stock.stock.stock_ticker;
-  // }
   const [query, setQuery] = useState("");
+  
   const filteredStocks = Data.filter(stock => {
     if (query === '') {
       return stock;
@@ -25,44 +21,64 @@ function Stocks() {
     }
   });
 
+  // Find the current stock data for the price display
+  const currentStock = Data.find(stock => stock.ticker === chartTicker);
+  const currentPrice = currentStock ? currentStock.price : "202.52";
+
   return (
-    <div className="App">
-      <input className="col-md-4" placeholder="Enter a stock ticker or stock name... " onChange={event => setQuery(event.target.value)} />
-      <div className="container">
-        <div className="row">
-          <div className="col-md-4 mt-5">
-            <div className="card">
-              <div className="card-body">
-                <ul className="list-group list-group-flush">
-                {
-                  filteredStocks.slice(0, 5).map((stock, ticker) => (
-                    <div className="box" key={ticker}>
-                      <StockRow ticker={stock.ticker} name={stock.name} onClick={() => {setChartTicker(stock.ticker); setChartName(stock.name);}}/>
-                    </div>
-                  ))
-                  // Data.map((stock) => (
-                  //   <div key={stock.id}>
-                  //     <StockRow ticker={stock.stock_ticker} onClick={() => setChartTicker({stock})}/>
-                  //   </div>
-                  // ))
-                }
-                  {/* <StockRow ticker="AAPL" onClick={() => setChartTicker("AAPL")}/>
-                  <StockRow ticker="GOOG" onClick={() => setChartTicker("GOOG")}/>
-                  <StockRow ticker="MSFT" onClick={() => setChartTicker("MSFT")}/>
-                  <StockRow ticker="MLGO" onClick={() => setChartTicker("MLGO")}/> */}
-                </ul>
-              </div>
+    <div className="stocks-page">
+      <div className="navigation">
+        <div className="nav-links">
+          <span className="nav-title">Stocks</span>
+        </div>
+        <hr />
+      </div>
+      
+      <div className="search-container">
+        <input 
+          className="search-input" 
+          placeholder="Enter a stock ticker or stock name..." 
+          onChange={event => setQuery(event.target.value)}
+        />
+      </div>
+      
+      <div className="stocks-container">
+        <div className="saved-stocks-sidebar">
+          <h2 className="sidebar-title">Saved</h2>
+          <div className="saved-stocks-list">
+            <ul className="list-group list-group-flush">
+              {filteredStocks.slice(0, 5).map((stock, ticker) => (
+                <div key={ticker}>
+                  <StockRow 
+                    ticker={stock.ticker} 
+                    name={stock.name} 
+                    onClick={() => {setChartTicker(stock.ticker); setChartName(stock.name);}}
+                  />
+                </div>
+              ))}
+            </ul>
+          </div>
+        </div>
+        
+        <div className="stock-detail">
+          <div className="stock-header-container">
+            <div className="stock-identity">
+              <h2 className="detail-ticker">{chartTicker}</h2>
+              <div className="detail-price">${currentPrice}</div>
+            </div>
+            <div className="action-buttons">
+              <button className="btn-action save">Save</button>
+              <button className="btn-action view">View</button>
             </div>
           </div>
-          <div className='col-md-8'>
-            <div className="chart">
-              <StockChart ticker={chartTicker} name={chartName}></StockChart>
-            </div>
+          
+          <div className="chart-container">
+            <StockChart ticker={chartTicker} name={chartName} />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Stocks;
