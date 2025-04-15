@@ -1,11 +1,58 @@
-.stock-row {
-    cursor: pointer;
-    color: black;
-    text-decoration: none;
-    transition: color 0.2s ease-in-out;
+.list-group-item {
+    border: 1px solid #d0d0d0 !important;
+    border-radius: 4px !important;
+    padding: 15px !important;
+    margin-bottom: 10px !important;
+    background: white !important;
 }
 
-.stock-row:hover {
-    color: blue;
-    text-decoration: underline;
+.list-group-item:hover {
+    background-color: #f9f9f9 !important;
+}
+
+.stock-info {
+    margin-bottom: 10px;
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.stock-ticker {
+    font-size: 16px;
+}
+
+.change {
+    font-size: 14px;
+}
+
+.stock-name {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.stock-price {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.add-to-favorites-btn {
+    width: 100%;
+    padding: 8px 0;
+    background-color: #798577;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+.add-to-favorites-btn:hover {
+    background-color: #575e55;
 }

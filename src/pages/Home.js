@@ -8,7 +8,7 @@ function Home() {
     const API_KEY = "86f36900809b4d6cb68317eed0bca8bb";
     const url = "https://newsapi.org/v2/everything?q=";
     const [articles, setArticles] = useState([]);
-    const [menuOpen, setMenuOpen] = useState(false);
+    const [activeCategory, setActiveCategory] = useState("latest");
     const searchInput = useRef(null);
 
     // Fetch news data
@@ -21,7 +21,9 @@ function Home() {
             console.log(query);
             console.log(data.articles);
             setArticles(data.articles || []);
-
+            
+            // Update active category
+            setActiveCategory(query.toLowerCase());
         } catch (error) {
             console.error("Error fetching data:", error);
             setArticles([]);
@@ -29,7 +31,6 @@ function Home() {
     }
 
     const addToFavorites = async (url, urlToImage, title, source, publishedAt, description) => {
-        
         try {
             const user = auth.currentUser;
 
@@ -55,90 +56,111 @@ function Home() {
         }
         catch (error) {
             console.error("There has been an error: ", error);
-            //setError("Failed to add stock to favorites");
         }
     }
 
     // Initial data fetch
     useEffect(() => {
-        fetchData("all");
+        fetchData("latest");
     }, []);
 
     return (
-        <div>
-            <header>
-                {/* Desktop Navigation + Search */}
-                <nav className="desktop">
-                    {/* Desktop Search */}
-                    <form className="desktopSearch" onSubmit={(e) => {
-                        e.preventDefault();
-                        fetchData(searchInput.current.value);
-                    }}>
-                        <input ref={searchInput} type="text" placeholder="Search news..." />
-                        <button className="searchButton" type="submit"><i className="fa-solid fa-search"></i></button>
-                    </form>
-                    {/* Desktop Navigation */}
-                    <ul className="desktopNav">
-                        <li onClick={() => fetchData("Latest")}>Latest</li>
-                        <li onClick={() => fetchData("Stocks")}>Stocks</li>
-                        <li onClick={() => fetchData("Economy")}>Economy</li>
-                        <li onClick={() => fetchData("Real Estate")}>Real Estate</li>
-                    </ul>
-                </nav>
-
-                {/* Mobile Menu Button
-                <div className="menuBtn" onClick={() => setMenuOpen(!menuOpen)}>
-                    <i className="fa-solid fa-bars"></i>
-                </div>
-
-                {/* Mobile Menu 
-                <div className={`mobile ${menuOpen ? "open" : ""}`}>
-                    <nav>
-                        <ul>
-                            <li onClick={() => fetchData("Latest")}>Latest</li>
-                            <li onClick={() => fetchData("Stocks")}>Stocks</li>
-                            <li onClick={() => fetchData("Economy")}>Economy</li>
-                            <li onClick={() => fetchData("Real Estate")}>Real Estate</li>
-                        </ul>
-                    </nav>
-
-                    {/* Mobile Search 
-                    <div className="inputSearch">
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            fetchData(searchInput.current.value);
-                        }}>
-                            <input ref={searchInput} type="text" placeholder="Type to search..." />
-                            <span><i className="fa-solid fa-search"></i></span>
-                        </form>
+        <div className="home-container">
+            <div className="header-layout">
+                <div className="categories-left">
+                    <div 
+                        className={`category ${activeCategory === "latest" ? "active" : ""}`}
+                        onClick={() => fetchData("latest")}
+                    >
+                        latest
                     </div>
-                </div> */}
-            </header>
-
-            {/* Main News Content */}
-            <main>
+                    <div 
+                        className={`category ${activeCategory === "stocks" ? "active" : ""}`}
+                        onClick={() => fetchData("stocks")}
+                    >
+                        stocks
+                    </div>
+                </div>
+                
+                <h1 className="page-title">Home</h1>
+                
+                <div className="categories-right">
+                    <div 
+                        className={`category ${activeCategory === "economy" ? "active" : ""}`}
+                        onClick={() => fetchData("economy")}
+                    >
+                        economy
+                    </div>
+                    <div 
+                        className={`category ${activeCategory === "real estate" ? "active" : ""}`}
+                        onClick={() => fetchData("real estate")}
+                    >
+                        real estate
+                    </div>
+                </div>
+            </div>
+            
+            <div className="search-container">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    fetchData(searchInput.current.value);
+                }}>
+                    <input ref={searchInput} type="text" placeholder="Search..." className="search-input" />
+                </form>
+            </div>
+            
+            <div className="divider"></div>
+            
+            {/* Article Grid */}
+            <div className="article-grid">
                 {articles.length > 0 ? (
                     articles.map((article, index) => (
                         article.urlToImage && (
-                            <div key={index} className="card">
-                                <a href={article.url}>
-                                    <img src={article.urlToImage} alt="News" loading="lazy" />
-                                    <h4>{article.title}</h4>
-                                    <div className="publishbyDate">
-                                        <p>{article.source.name}</p>
-                                        <span>•</span>
-                                        <p>{new Date(article.publishedAt).toLocaleDateString()}</p>
+                            <div key={index} className="article-card">
+                                <a href={article.url} target="_blank" rel="noopener noreferrer">
+                                    <div className="article-image">
+                                        <img src={article.urlToImage} alt={article.title} loading="lazy" />
                                     </div>
-                                    <div className="desc">{article.description}</div>
+                                    <div className="article-content">
+                                        <h3 className="article-title">{article.title}</h3>
+                                        <div className="article-meta">
+                                            <span className="article-source">{article.source.name}</span>
+                                            <span className="meta-divider">|</span>
+                                            <span className="article-date">{new Date(article.publishedAt).toLocaleDateString()}</span>
+                                        </div>
+                                        <p className="article-description">{article.description}</p>
+                                    <div className="article-actions">
+                                        <a href={article.url} className="read-more" target="_blank" rel="noopener noreferrer">
+                                            Read More
+                                        </a>
+                                        <button 
+                                            className="favorite-button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                addToFavorites(
+                                                    article.url, 
+                                                    article.urlToImage, 
+                                                    article.title, 
+                                                    article.source.name, 
+                                                    article.publishedAt, 
+                                                    article.description
+                                                );
+                                            }}
+                                        >
+                                            Add To Favorites
+                                        </button>
+                                    </div>
+                                    </div>
                                 </a>
-                                <button onClick={() => addToFavorites(article.url, article.urlToImage, article.title, article.source.name, article.publishedAt, article.description)}>Add To Favorites</button>
                             </div>
                         )
                     ))
                 ) : (
-                    <p>No articles found.</p>
+                    <div className="no-articles">
+                        <p>No articles found.</p>
+                    </div>
                 )}
-            </main>
+            </div>
         </div>
     );
 }

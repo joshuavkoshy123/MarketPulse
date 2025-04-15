@@ -45,3 +45,136 @@
   width: 20rem;
   padding-left: 10px;
 }
+
+/* Stocks Page Styles */
+.stocks-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Navigation */
+.navigation {
+  margin-bottom: 30px;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  margin-bottom: 10px;
+}
+
+.nav-item {
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.nav-title {
+  font-size: 42px;
+  color: #798577;
+  font-weight: 500;
+}
+
+.navigation hr {
+  border-top: 1px solid #e0e0e0;
+  margin: 0;
+}
+
+/* Search Input */
+.search-container {
+  display: flex;
+  justify-content: right;
+  margin: 20px 0 30px;
+}
+
+.search-input {
+  width: 60%;
+  max-width: 500px;
+  padding: 10px 15px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Stocks Container Layout */
+.stocks-container {
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+/* Sidebar Styles */
+.saved-stocks-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.sidebar-title {
+  font-size: 32px;
+  color: #465541;
+  margin-bottom: 20px;
+  font-weight: normal;
+}
+
+/* Stock Detail Area */
+.stock-detail {
+  flex: 1;
+  text-align: center;
+}
+
+.stock-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.stock-identity {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-ticker {
+  font-size: 36px;
+  color: #333;
+  margin: 0;
+}
+
+.detail-price {
+  font-size: 24px;
+  color: #333;
+  margin-top: 5px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action {
+  padding: 8px 25px;
+  border-radius: 20px;
+  background-color: #798577;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+  opacity: 0.9;
+  background-color: #465541;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
