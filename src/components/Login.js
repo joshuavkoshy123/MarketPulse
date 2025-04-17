@@ -1,35 +1,27 @@
 import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../config/config"; 
 
-function Login() {
+function SignUp({ toggle }) {
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isSignUp, setIsSignUp] = useState(false); 
   const navigate = useNavigate();
-
-  const handleEmail = (e) => setEmail(e.target.value);
-  const handlePassword = (e) => setPassword(e.target.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-
     try {
-      if (isSignUp) {
-        
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("User Signed Up:", userCredential.user);
-      } else {
-       
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("User Logged In:", userCredential.user);
-      }
-      navigate("/"); 
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User Signed Up:", userCredential.user);
+
+      // TODO: Optional - Store first/last name in Firestore
+
+      navigate("/");
     } catch (error) {
-      console.error("Error:", error.message);
       setError(error.message);
     }
   };
@@ -37,44 +29,131 @@ function Login() {
   return (
     <form className="Loginform-container" onSubmit={handleSubmit}>
       <div className="Login-container">
-        <p style={{ color: "white" }} className="mb-5">{isSignUp ? "Sign Up" : "Login"}</p>
-        <label htmlFor="Email" style={{ color: "white" }}>Email*</label>
+        <p style={{ color: "white" }} className="mb-5">Sign Up</p>
+
+        <label style={{ color: "white" }}>First Name*</label>
+        <input
+          type="text"
+          value={first_name}
+          className="Login-input"
+          placeholder="First Name"
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+        />
+
+        <label style={{ color: "white" }}>Last Name*</label>
+        <input
+          type="text"
+          value={last_name}
+          className="Login-input"
+          placeholder="Last Name"
+          onChange={(e) => setLastName(e.target.value)}
+          required
+        />
+
+        <label style={{ color: "white" }}>Email*</label>
         <input
           type="email"
           value={email}
           className="Login-input"
-          name="Email"
           placeholder="Email"
-          onChange={handleEmail}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
-        <label htmlFor="password" className="mt-4" style={{ color: "white" }}>Password*</label>
+        <label style={{ color: "white" }}>Password*</label>
         <input
           type="password"
           value={password}
-          name="password"
           className="Login-input"
           placeholder="Password"
-          onChange={handlePassword}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <button className="btn btn-dark btn-sm" type="submit">
-          {isSignUp ? "Sign Up" : "Login"}
-        </button>
+        <button className="btn btn-dark btn-sm" type="submit">Sign Up</button>
+        {error && <div className="error">{error}</div>}
 
         <p 
           style={{ color: "white", cursor: "pointer", marginTop: "10px" }}
-          onClick={() => setIsSignUp(!isSignUp)}
+          onClick={toggle}
         >
-          {isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up"}
+          Already have an account? Login
         </p>
       </div>
-
-      {error && <div className="error">{error}</div>}
     </form>
   );
 }
 
-export default Login;
+function Login({ toggle }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("User Logged In:", userCredential.user);
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  return (
+    <form className="Loginform-container" onSubmit={handleSubmit}>
+      <div className="Login-container">
+        <p style={{ color: "white" }} className="mb-5">Login</p>
+
+        <label style={{ color: "white" }}>Email*</label>
+        <input
+          type="email"
+          value={email}
+          className="Login-input"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
+        <label style={{ color: "white" }}>Password*</label>
+        <input
+          type="password"
+          value={password}
+          className="Login-input"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button className="btn btn-dark btn-sm" type="submit">Login</button>
+        {error && <div className="error">{error}</div>}
+
+        <p 
+          style={{ color: "white", cursor: "pointer", marginTop: "10px" }}
+          onClick={toggle}
+        >
+          Don't have an account? Sign Up
+        </p>
+      </div>
+    </form>
+  );
+}
+
+function AuthPage() {
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  return (
+    <div>
+      {isSignUp ? (
+        <SignUp toggle={() => setIsSignUp(false)} />
+      ) : (
+        <Login toggle={() => setIsSignUp(true)} />
+      )}
+    </div>
+  );
+}
+
+export default AuthPage;
