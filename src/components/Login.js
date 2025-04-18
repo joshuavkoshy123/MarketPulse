@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../config/config"; 
+import { auth, db } from "../config/config";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 function SignUp({ toggle }) {
   const [first_name, setFirstName] = useState("");
@@ -16,9 +17,21 @@ function SignUp({ toggle }) {
     setError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User Signed Up:", userCredential.user);
+      const user = userCredential.user;
 
-      // TODO: Optional - Store first/last name in Firestore
+      // Save user profile to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName: first_name,
+        lastName: last_name,
+        email: email,
+      });
+
+      // Save to localStorage
+      localStorage.setItem("userInfo", JSON.stringify({
+        firstName: first_name,
+        lastName: last_name,
+        email: email,
+      }));
 
       navigate("/");
     } catch (error) {
@@ -74,7 +87,7 @@ function SignUp({ toggle }) {
         <button className="btn btn-dark btn-sm" type="submit">Sign Up</button>
         {error && <div className="error">{error}</div>}
 
-        <p 
+        <p
           style={{ color: "white", cursor: "pointer", marginTop: "10px" }}
           onClick={toggle}
         >
@@ -96,7 +109,17 @@ function Login({ toggle }) {
     setError(null);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("User Logged In:", userCredential.user);
+      const user = userCredential.user;
+
+      // Fetch user data from Firestore
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userInfo = docSnap.data();
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      }
+
       navigate("/");
     } catch (error) {
       setError(error.message);
@@ -131,7 +154,7 @@ function Login({ toggle }) {
         <button className="btn btn-dark btn-sm" type="submit">Login</button>
         {error && <div className="error">{error}</div>}
 
-        <p 
+        <p
           style={{ color: "white", cursor: "pointer", marginTop: "10px" }}
           onClick={toggle}
         >

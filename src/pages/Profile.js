@@ -3,6 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/config';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 function Profile() {
   const [firstName, setFirstName] = useState('');
@@ -86,10 +87,6 @@ function Profile() {
             disabled
           />
         </Form.Group>
-
-        <Button type="submit" variant="primary">
-          Update Profile
-        </Button>
       </Form>
 
       <Button variant="danger" onClick={handleLogout} className="mt-3">
