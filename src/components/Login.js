@@ -64,7 +64,7 @@ function SignUp({ toggle }) {
           required
         />
 
-        <label style={{ color: "white" }}>Email*</label>
+        <label style={{ color: "white" }}>Email</label>
         <input
           type="email"
           value={email}
@@ -74,7 +74,7 @@ function SignUp({ toggle }) {
           required
         />
 
-        <label style={{ color: "white" }}>Password*</label>
+        <label style={{ color: "white" }}>Password</label>
         <input
           type="password"
           value={password}
@@ -131,7 +131,7 @@ function Login({ toggle }) {
       <div className="Login-container">
         <p style={{ color: "white" }} className="mb-5">Login</p>
 
-        <label style={{ color: "white" }}>Email*</label>
+        <label style={{ color: "white" }}>Email</label>
         <input
           type="email"
           value={email}
@@ -141,7 +141,7 @@ function Login({ toggle }) {
           required
         />
 
-        <label style={{ color: "white" }}>Password*</label>
+        <label style={{ color: "white" }}>Password</label>
         <input
           type="password"
           value={password}
