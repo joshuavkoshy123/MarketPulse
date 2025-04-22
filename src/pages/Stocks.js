@@ -63,8 +63,7 @@ function Stocks() {
         <div className="stock-detail">
           <div className="stock-header-container">
             <div className="stock-identity">
-              <h2 className="detail-ticker">{chartTicker}</h2>
-              <div className="detail-price">${currentPrice}</div>
+              <div></div>
             </div>
             <div className="action-buttons">
               <button className="btn-action save">Save</button>

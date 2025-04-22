@@ -259,6 +259,7 @@
     font-weight: 500;
     transition: all 0.3s ease;
     padding: 6px 12px;
+    margin: 15px;
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
