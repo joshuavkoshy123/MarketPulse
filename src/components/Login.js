@@ -41,7 +41,6 @@ function SignUp({ toggle }) {
   return (
     <div className="login-page">
       <div className="header">
-        <h1>Finance App</h1>
       </div>
       <form className="login-container" onSubmit={handleSubmit}>
         <h2>Sign Up</h2>
@@ -129,7 +128,6 @@ function Login({ toggle }) {
   return (
     <div className="login-page">
       <div className="header">
-        <h1>Finance App</h1>
       </div>
       <form className="login-container" onSubmit={handleSubmit}>
         <h2>Login</h2>
