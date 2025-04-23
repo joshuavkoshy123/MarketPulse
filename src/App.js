@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 
 function App() {
   return (
-    <Router basename="/MarketPulse">
+    <Router>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

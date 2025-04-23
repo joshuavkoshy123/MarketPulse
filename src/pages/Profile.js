@@ -24,7 +24,7 @@ function Profile() {
   const [articles, setArticles] = useState([]);
   const [stocks, setStocks] = useState([]);
   const [saved, setSaved] = useState(false);
-  const [saveArticleButtonText, setArticleSaveButtonText] = useState("Add To Favorites");
+  const [saveArticleButtonText, setArticleSaveButtonText] = useState("Remove from Favorites");
   const [saveArticleButtonStyle, setArticleSaveButtonStyle] = useState({
     backgroundColor: "red",
     color: "white",
@@ -196,9 +196,9 @@ function Profile() {
                       Read More
                     </a>
                     <button
-                      className="favorite-button"
+                      className="favorite-button" style={{backgroundColor: "red", color: "white", padding: "10px"}}
                       >
-                        Add To Favorites
+                        Remove From Favorites
                     </button>
                   </div>
                   </div>
