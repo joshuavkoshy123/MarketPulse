@@ -19,33 +19,6 @@ class StockRow extends Component {
         this.updateApiCalled = false;
     }
 
-    addToFavorites = async (ticker, name) => {
-        
-        try {
-            const user = auth.currentUser;
-
-            if (!user) {
-                throw new Error("User not authenticated.");
-            }
-
-            const stockData = {
-                ticker: ticker,
-                name: name,
-                type: "stock"
-            };
-
-            const userDoc = doc(db, 'users', user.uid);
-
-            await setDoc(userDoc, {
-                favorites: arrayUnion(stockData)
-            }, { merge: true });
-        }
-        catch (error) {
-            console.error("There has been an error: ", error);
-            //setError("Failed to add stock to favorites");
-        }
-    }
-
     changeStyle() {
         let color;
         if (Number(this.state.data.price_change) > 0) {
@@ -83,8 +56,8 @@ class StockRow extends Component {
 
     render() {
         return (
-            <li className="list-group-item">
-                <div className="stock-info" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }}>
+            <div className="list-group-item" style={{ marginBottom: 0, paddingBottom: 0 }} >
+                <div className="stock-info" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }} >
                     <div className="stock-header">
                         <b className="stock-ticker">{this.props.ticker}</b> 
                         <span className="change" style={this.changeStyle()}>
@@ -94,7 +67,7 @@ class StockRow extends Component {
                     <p className="stock-name">{this.props.name}</p>
                     <div className="stock-price">${this.state.data ? Number(this.state.data.price).toFixed(2) : "Loading..."}</div>
                 </div>
-                <button 
+                {/* <button 
                     className="add-to-favorites-btn" 
                     onClick={(e) => {
                         e.stopPropagation();
@@ -102,8 +75,8 @@ class StockRow extends Component {
                     }}
                 >
                     Add To Favorites
-                </button>
-            </li>
+                </button> */}
+            </div>
         )
     }
 }

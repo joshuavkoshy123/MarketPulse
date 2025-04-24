@@ -1,34 +1,39 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../config/config"; 
-import "./Login.css";
+import { auth, db } from "../config/config";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import "./Login.css"; 
 
-function Login() {
+function SignUp({ toggle }) {
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isSignUp, setIsSignUp] = useState(false); 
   const navigate = useNavigate();
-
-  const handleEmail = (e) => setEmail(e.target.value);
-  const handlePassword = (e) => setPassword(e.target.value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-
     try {
-      if (isSignUp) {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("User Signed Up:", userCredential.user);
-      } else {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("User Logged In:", userCredential.user);
-      }
-      navigate("/"); 
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        firstName: first_name,
+        lastName: last_name,
+        email,
+      });
+
+      localStorage.setItem("userInfo", JSON.stringify({
+        firstName: first_name,
+        lastName: last_name,
+        email,
+      }));
+
+      navigate("/");
     } catch (error) {
-      console.error("Error:", error.message);
       setError(error.message);
     }
   };
@@ -37,53 +42,135 @@ function Login() {
     <div className="login-page">
       <div className="header">
       </div>
-      
-      <div className="login-container">
-        <h2>{isSignUp ? "Sign Up" : "Log In"}</h2>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <input
-              type="email"
-              value={email}
-              className="form-input"
-              placeholder="username"
-              onChange={handleEmail}
-              required
-            />
-          </div>
+      <form className="login-container" onSubmit={handleSubmit}>
+        <h2>Sign Up</h2>
 
-          <div className="input-group">
-            <input
-              type="password"
-              value={password}
-              className="form-input"
-              placeholder="password"
-              onChange={handlePassword}
-              required
-            />
-            <div className="forgot-password">
-              <span>forgot password?</span>
-            </div>
-          </div>
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-input"
+            placeholder="First Name"
+            value={first_name}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </div>
 
-          <button type="submit" className="sign-in-button">
-            Sign in
-          </button>
-        </form>
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Last Name"
+            value={last_name}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </div>
 
-        <p className="toggle-signup" onClick={() => setIsSignUp(!isSignUp)}>
-          {isSignUp ? "Already have an account? Login" : "Don't have an account? Sign Up"}
-        </p>
-        
+        <div className="input-group">
+          <input
+            type="email"
+            className="form-input"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="input-group">
+          <input
+            type="password"
+            className="form-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button className="sign-in-button" type="submit">Sign Up</button>
         {error && <div className="error-message">{error}</div>}
-      </div>
-      
-      <div className="back-arrow">
-        <span>←</span>
-      </div>
+
+        <p className="toggle-signup" onClick={toggle}>Already have an account? Login</p>
+      </form>
     </div>
   );
 }
 
-export default Login;
+function Login({ toggle }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const userInfo = docSnap.data();
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      }
+
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  return (
+    <div className="login-page">
+      <div className="header">
+      </div>
+      <form className="login-container" onSubmit={handleSubmit}>
+        <h2>Login</h2>
+
+        <div className="input-group">
+          <input
+            type="email"
+            className="form-input"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="input-group">
+          <input
+            type="password"
+            className="form-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button className="sign-in-button" type="submit">Login</button>
+        {error && <div className="error-message">{error}</div>}
+
+        <p className="toggle-signup" onClick={toggle}>Don't have an account? Sign Up</p>
+      </form>
+    </div>
+  );
+}
+
+function AuthPage() {
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  return isSignUp ? (
+    <SignUp toggle={() => setIsSignUp(false)} />
+  ) : (
+    <Login toggle={() => setIsSignUp(true)} />
+  );
+}
+
+export default AuthPage;

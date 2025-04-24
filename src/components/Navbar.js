@@ -49,8 +49,15 @@ function Navbar() {
             <a href="/">Home</a>
             <span className="nav-divider">|</span>
             <a href="/stocks">Stocks</a>
-            <span className="nav-divider">|</span>
-            <a href="/profile">Profile</a>
+            
+            {/* Only show Profile link if user is logged in */}
+            {user && (
+              <>
+                <span className="nav-divider">|</span>
+                <a href="/profile">Profile</a>
+              </>
+            )}
+            
             <span className="nav-divider">|</span>
             
             {/*login or logout based on auth state */}

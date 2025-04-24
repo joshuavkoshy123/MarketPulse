@@ -2,7 +2,7 @@
 :root {
     --primary-bg: #ffffff;
     --secondary-bg: #f5f5f5;
-    --card-bg: #798577;
+    --card-bg: #e6e6e6;
     --text-primary: #333333;
     --text-secondary: #555555;
     --text-tertiary: #777777;
@@ -211,7 +211,7 @@
   .article-description {
     font-size: 14px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(95, 110, 102, 0.9);
     margin-bottom: 20px;
     flex-grow: 1;
     display: -webkit-box;
@@ -221,7 +221,7 @@
   }
   
   .article-description a {
-    color: inherit;
+    color: rgba(95, 110, 102, 0.9);
     text-decoration: none;
   }
   
@@ -236,7 +236,7 @@
     margin-top: 0;
     margin-bottom: 10px;
     line-height: 1.4;
-    color: white;
+    color: rgba(95, 110, 102, 0.9);
     text-decoration: none;
   }
   
