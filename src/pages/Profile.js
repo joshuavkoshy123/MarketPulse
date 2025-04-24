@@ -52,6 +52,23 @@ function Profile() {
     setArticles(updatedArticles);
   }
 
+  function removeStockFromFavorites(stockData) {
+    if (!currentUser) return;
+  
+    // Remove from Firestore
+    const userRef = doc(db, "users", currentUser.uid);
+    updateDoc(userRef, {
+      favorites: arrayRemove(stockData)
+    });
+  
+    // Remove from state
+    const updatedStocks = stocks.filter((stock) => {
+      return stock.data.ticker !== stockData.ticker;
+    });
+  
+    setStocks(updatedStocks);
+  }
+
   // Fetch user info on initial render (from localStorage or API)
   // Runs anytime data changes
   useEffect(() => {
@@ -190,6 +207,15 @@ function Profile() {
           {stocks?.map(({ data }) => (
           <div key={data.ticker}>
             <StockRow ticker={data.ticker} name={data.name} />
+            <button
+              className="favorites-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeStockFromFavorites(data);
+              }}
+            >
+              Remove From Favorites
+            </button>
           </div>))}
         </ul>
       </div>

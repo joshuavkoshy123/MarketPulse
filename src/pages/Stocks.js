@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import StockRow from '../components/StockRow.js';
 import StockChart from '../components/StockChart.js';
 import Data from '../stock-data.json';
+import { auth, db } from '../config/config.js';
+import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 
 function Stocks() {
   const [chartTicker, setChartTicker] = useState("AAPL");
@@ -20,6 +22,33 @@ function Stocks() {
       return stock;
     }
   });
+
+  const addToFavorites = async (ticker, name) => {
+        
+        try {
+            const user = auth.currentUser;
+
+            if (!user) {
+                throw new Error("User not authenticated.");
+            }
+
+            const stockData = {
+                ticker: ticker,
+                name: name,
+                type: "stock"
+            };
+
+            const userDoc = doc(db, 'users', user.uid);
+
+            await setDoc(userDoc, {
+                favorites: arrayUnion(stockData)
+            }, { merge: true });
+        }
+        catch (error) {
+            console.error("There has been an error: ", error);
+            //setError("Failed to add stock to favorites");
+        }
+    }
 
   // Find the current stock data for the price display
   const currentStock = Data.find(stock => stock.ticker === chartTicker);
@@ -48,12 +77,22 @@ function Stocks() {
           <div className="saved-stocks-list">
             <ul className="list-group list-group-flush">
               {filteredStocks.slice(0, 5).map((stock, ticker) => (
-                <div key={ticker}>
+                <div style={{ flexDirection: "column", gap: 0, margin: 0, padding: 0 }} key={ticker}>
                   <StockRow 
                     ticker={stock.ticker} 
                     name={stock.name} 
                     onClick={() => {setChartTicker(stock.ticker); setChartName(stock.name);}}
                   />
+                  <button
+                    className="favorites-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToFavorites(stock.ticker, stock.name);
+                    }}
+                    style={{ margin: 0 }}
+                  >
+                    Add To Favorites
+                  </button>
                 </div>
               ))}
             </ul>
