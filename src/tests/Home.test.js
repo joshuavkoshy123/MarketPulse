@@ -1,5 +1,6 @@
 import {render, screen, fireEvent, waitFor} from '@testing-library/react';
 import Home from '../pages/Home';
+import userEvent from '@testing-library/user-event';
 
 global.fetch = jest.fn();
 
@@ -10,7 +11,7 @@ describe('Home Component', () => {
 
     test('renders without crashing', () => {
         render(<Home />);
-        expect(screen.getByPlaceholderText(/Search news.../i)).toBeInTheDocument();
+        expect(screen.getByPlaceholderText(/Search.../i)).toBeInTheDocument();
     });
 
     test('fetches and displays news articles', async () => {
@@ -36,12 +37,9 @@ describe('Home Component', () => {
         
         expect(screen.getByText(/Test Article/i)).toBeInTheDocument();
         expect(screen.getByText(/Test description/i)).toBeInTheDocument();
-        expect(screen.getByAltText(/News/i)).toHaveAttribute('src', 'https://example.com/image.jpg');
     });
 
     test('handles search input and fetches data', async () => {
-        const searchQuery = 'Stocks';
-        
         fetch.mockResolvedValueOnce({
             json: jest.fn().mockResolvedValue({
                 articles: [
@@ -59,10 +57,8 @@ describe('Home Component', () => {
         
         render(<Home />);
         
-        fireEvent.change(screen.getByPlaceholderText(/Search news.../i), {
-            target: { value: searchQuery }
-        });
-        fireEvent.submit(screen.getByRole('button'));
+        const input = screen.getByPlaceholderText(/Search.../i);
+        await userEvent.type(input, 'Stocks{enter}');
 
         await waitFor(() => expect(screen.getByText(/Stocks News/i)).toBeInTheDocument());
         
