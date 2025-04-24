@@ -18,18 +18,22 @@ jest.mock("firebase/app", () => ({
   	initializeApp: jest.fn(() => ({})),
 }));
 
+jest.mock("firebase/firestore", () => ({
+	getFirestore: jest.fn(() => ({})),
+}));
+
 jest.mock("react-router-dom", () => ({
 	...jest.requireActual("react-router-dom"),
 	useNavigate: () => jest.fn(),
 }));
 
-const renderWithRouter = (ui) => {
+const renderLogin = (ui) => {
   	return render(<BrowserRouter>{ui}</BrowserRouter>);
 };
 
 describe("Login component", () => {
 	test("Valid input", () => {
-		renderWithRouter(<Login />);
+		renderLogin(<Login />);
 
 		fireEvent.change(screen.getByPlaceholderText("Email"), {
 			target: {value: "test@email.com"},
@@ -44,7 +48,7 @@ describe("Login component", () => {
 
 	test("Password shorter than 8 chars", async () => {
 		signInWithEmailAndPassword.mockRejectedValueOnce(new Error("Password too short"));
-		renderWithRouter(<Login />);
+		renderLogin(<Login />);
 
 		fireEvent.change(screen.getByPlaceholderText("Email"), {
 			target: {value: "test@email.com"},
@@ -60,7 +64,7 @@ describe("Login component", () => {
 
 	test("Email shorter than 4 chars", async () => {
 		signInWithEmailAndPassword.mockRejectedValueOnce(new Error("Email too short"));
-		renderWithRouter(<Login />);
+		renderLogin(<Login />);
 
 		fireEvent.change(screen.getByPlaceholderText("Email"), {
 			target: {value: "a"},
@@ -76,7 +80,7 @@ describe("Login component", () => {
 
   	test("Email with spaces", async () => {
 		signInWithEmailAndPassword.mockRejectedValueOnce(new Error("Email contains spaces"));
-		renderWithRouter(<Login />);
+		renderLogin(<Login />);
 
 		fireEvent.change(screen.getByPlaceholderText("Email"), {
 			target: {value: "test @email.com"},
@@ -92,7 +96,7 @@ describe("Login component", () => {
 
   	test("Password with spaces", async () => {
 		signInWithEmailAndPassword.mockRejectedValueOnce(new Error("Password contains spaces"));
-		renderWithRouter(<Login />);
+		renderLogin(<Login />);
 
 		fireEvent.change(screen.getByPlaceholderText("Email"), {
 			target: {value: "test@email.com"},

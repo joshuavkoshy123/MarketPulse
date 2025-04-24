@@ -100,6 +100,7 @@ const Profile = () => {
     setStocks(updatedStocks);
   }
 
+
   // Handle logout
   const handleLogout = async () => {
     try {
@@ -111,6 +112,8 @@ const Profile = () => {
     }
   };
 
+
+  // display profile page elements
   return (
     <div className="profile-wrapper">
       <div className="profile-header-container">
