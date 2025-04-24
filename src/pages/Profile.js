@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../config/config';
-import { doc, getDoc, getFirestore, collection, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, getFirestore, collection, onSnapshot, updateDoc, arrayRemove } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import StockRow from '../components/StockRow.js';
@@ -30,10 +30,27 @@ function Profile() {
     color: "white",
     padding: "10px",
   });
+  const [currentUser, setCurrentUser] = useState(null);
 
 
   const navigate = useNavigate();
 
+  function removeArticleFromFavorites(articleData) {
+    if (!currentUser) return;
+  
+    // Remove from Firestore
+    const userRef = doc(db, "users", currentUser.uid);
+    updateDoc(userRef, {
+      favorites: arrayRemove(articleData)
+    });
+  
+    // Remove from state
+    const updatedArticles = articles.filter((article) => {
+      return article.data.url !== articleData.url;
+    });
+  
+    setArticles(updatedArticles);
+  }
 
   // Fetch user info on initial render (from localStorage or API)
   // Runs anytime data changes
@@ -50,6 +67,9 @@ function Profile() {
   // waits to confirm that the user is logged in
   onAuthStateChanged(auth, async (currentUser) => {
     // checks if user is logged in
+
+    setCurrentUser(currentUser);
+
     if (currentUser) {
       // get the document from the "users" collection for the currently logged in user
       const userRef = doc(db, "users", currentUser.uid);
@@ -179,12 +199,15 @@ function Profile() {
           articles.map((article, index) => (
             article.data.urlToImage && (
               <div key={index} className="article-card">
-                <a href={article.data.url} target="_blank" rel="noopener noreferrer">
                   <div className="article-image">
-                    <img src={article.data.urlToImage} alt={article.data.title} loading="lazy" />
+                    <a href={article.data.url} target="_blank" rel="noopener noreferrer">
+                      <img src={article.data.urlToImage} alt={article.data.title} loading="lazy" />
+                    </a>
                   </div>
                   <div className="article-content">
-                  <h3 className="article-title">{article.data.title}</h3>
+                  <a href={article.data.url} target="_blank" rel="noopener noreferrer">
+                    <h3 className="article-title">{article.data.title}</h3>
+                  </a>
                   <div className="article-meta">
                     <span className="article-source">{article.data.source}</span>
                     <span className="meta-divider">|</span>
@@ -196,13 +219,14 @@ function Profile() {
                       Read More
                     </a>
                     <button
-                      className="favorite-button" style={{backgroundColor: "red", color: "white", padding: "10px"}}
+                      className="favorite-button"
+                      style={{ backgroundColor: "red", color: "white", padding: "10px" }}
+                      onClick={() => removeArticleFromFavorites(article.data)}
                       >
                         Remove From Favorites
                     </button>
                   </div>
                   </div>
-                </a>
               </div>
             )
           ))
