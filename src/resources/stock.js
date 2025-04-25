@@ -5,7 +5,6 @@ import { finnhub } from "../config/finnhub";
 export const stock = {
 
     latestPrice: (ticker, callback) => {
-        //const url = `${alphaVantage.base_url}function=GLOBAL_QUOTE&symbol=${ticker}&apikey=${alphaVantage.api_token}`;
         fetch(stock.latestPriceURL(ticker))
         .then((response) => response.json())
         .then((data) => callback(stock.formatPriceData(data)))
@@ -13,19 +12,13 @@ export const stock = {
     },
 
     latestPriceURL: (ticker) => {
-        //return `${twelvedata.base_url}/quote?symbol=${ticker}&apikey=${twelvedata.api_token}`;
         return `${finnhub.base_url}/quote?symbol=${ticker}&token=${finnhub.api_token}`
     },
 
     formatPriceData: (data) => {
         const stockData = data;
         const formattedData = {};
-        // formattedData.price = stockData["05. price"]
-        // formattedData.date = stockData["07. latest trading day"]
-        // formattedData.price_change = stockData["09. change"]
-        // formattedData.percent_change = stockData["10. change percent"]
         formattedData.price = stockData["c"]
-        //formattedData.date = stockData.close
         const price_change = stockData["c"] - stockData["pc"]
         formattedData.price_change = price_change
         formattedData.percent_change = (price_change / stockData["pc"]) * 100
@@ -39,6 +32,7 @@ export const stock = {
     fetchStock: (ticker, callback) => {
         let stockChartXValuesFunction = [];
         let stockChartYValuesFunction = [];
+        let keyStatistics = {};
         fetch(stock.stockHistoryURL(ticker))
         .then((response) => response.json())
         .then(
@@ -50,9 +44,16 @@ export const stock = {
                     stockChartYValuesFunction.push(data.values[i].close);
                 }
 
+                keyStatistics.prev_close = data.values[1].close;
+                keyStatistics.open = data.values[0].open;
+                keyStatistics.high = data.values[0].high;
+                keyStatistics.low = data.values[0].low;
+                keyStatistics.volume = data.values[0].volume;
+                keyStatistics.close = data.values[0].close;
+
                 //console.log(stockChartXValuesFunction);
                 //console.log(stockChartYValuesFunction);
-                callback(stockChartXValuesFunction, stockChartYValuesFunction);
+                callback(stockChartXValuesFunction, stockChartYValuesFunction, keyStatistics);
             }
         )
         .catch(error => console.error("API Fetch Error:", error));

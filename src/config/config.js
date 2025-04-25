@@ -5,7 +5,7 @@ import { getFirestore } from "firebase/firestore";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDoUrc-8IQBIr4gUKmEvxBzAPG68DHCfWI",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "marketpulse-7bf1a.firebaseapp.com",
   projectId: "marketpulse-7bf1a",
   storageBucket: "marketpulse-7bf1a.firebasestorage.app",

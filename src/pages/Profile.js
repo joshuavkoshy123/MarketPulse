@@ -4,6 +4,7 @@ import { auth, db } from '../config/config';
 import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import './ProfileStyles.css';
+import StockRow from '../components/StockRow';
 
 const Profile = () => {
   const [firstName, setFirstName] = useState('');
@@ -177,18 +178,31 @@ const Profile = () => {
             articles.map((article, index) => (
               article.data.urlToImage && (
                 <div key={index} className="article-item">
-                  <div className="article-content">
-                    <h3 className="article-title">{article.data.title || "Turning Vision Into Reality: Developing a CIO Strategy"}</h3>
-                    <div className="article-meta">
-                      {article.data.source || 'Forbes'} | {new Date(article.data.publishedAt || '2025-04-02').toLocaleDateString()}
+                  <a href={article.data.url} target="_blank" rel="noopener noreferrer">
+                    <div className="article-image">
+                      <img src={article.data.urlToImage} alt={article.data.title} loading="lazy" />
                     </div>
+                    <div className="article-content">
+                      <h3 className="article-title">{article.data.title || "Turning Vision Into Reality: Developing a CIO Strategy"}</h3>
+                      <div className="article-meta">
+                        <span className="article-source">{article.data.source}</span>
+                        <span className="meta-divider">|</span>
+                        <span className="article-date">{new Date(article.data.publishedAt).toLocaleDateString()}</span>
+                      </div>
+                      <p className="article-description">{article.data.description}</p>
+                    </div>
+                  </a>
+                  <div className="article-actions">
+                    <a href={article.data.url} className="read-more" target="_blank" rel="noopener noreferrer">
+                      Read More
+                    </a>
+                    <button
+                      className="remove-favorite-btn"
+                      onClick={() => removeArticleFromFavorites(article.data)}
+                    >
+                      Remove From Favorites
+                    </button>
                   </div>
-                  <button
-                    className="remove-favorite-btn"
-                    onClick={() => removeArticleFromFavorites(article.data)}
-                  >
-                    Remove From Favorites
-                  </button>
                 </div>
               )
             ))
@@ -206,12 +220,20 @@ const Profile = () => {
           {stocks.length > 0 ? (
             stocks.map(({ data }, index) => (
               <div key={index} className="stock-item">
-                <div className="stock-content">
-                  <div className="stock-symbol">{data.ticker || 'AA'}</div>
+                {/* <div className="stock-content"> */}
+                  {/* <div className="stock-symbol">{data.ticker || 'AA'}</div>
                   <div className="stock-data">
                     <span className="stock-change">$-3.51 (-11.38%)</span> <span className="stock-price">$27.33</span>
-                  </div>
-                </div>
+                  </div> */}
+                <div>
+                  <a href={`https://finance.yahoo.com/quote/${data.ticker}`} target="_blank" rel="noopener noreferrer">
+                    <StockRow 
+                      ticker={data.ticker}
+                      name={data.name}
+                    />
+                  </a>
+                </div>  
+                {/* </div> */}
                 <button
                   className="remove-favorite-btn"
                   onClick={() => removeStockFromFavorites(data)}

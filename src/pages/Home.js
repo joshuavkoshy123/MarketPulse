@@ -1,14 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import './styles.css';
-import { doc, setDoc, arrayUnion } from "firebase/firestore";
+import { doc, setDoc, arrayUnion, onSnapshot } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../config/config";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Home() {
-    const API_KEY = "86f36900809b4d6cb68317eed0bca8bb";
+    const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
     const url = "https://newsapi.org/v2/everything?q=";
     const [articles, setArticles] = useState([]);
     const [activeCategory, setActiveCategory] = useState("latest");
+    const [favorites, setFavorites] = useState([]);
     const searchInput = useRef(null);
 
     // Fetch news data
@@ -62,7 +64,32 @@ function Home() {
     // Initial data fetch
     useEffect(() => {
         fetchData("latest");
+
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userDoc = doc(db, 'users', user.uid);
+        
+                const unsubscribeSnapshot = onSnapshot(userDoc, (docSnapshot) => {
+                const data = docSnapshot.data();
+                if (data && data.favorites) {
+                    setFavorites(data.favorites);
+                    console.log("Favorites updated:", data.favorites);
+                }
+                });
+        
+                // Clean up the Firestore listener when auth state or component changes
+                return () => unsubscribeSnapshot();
+            }
+        });
+  
+        // Clean up the auth state listener
+        return () => unsubscribeAuth();
     }, []);
+
+    // Check if article is contained in favorites
+    const isFavorite = (title) => {
+        return favorites.some(article => article.title === title);
+    };
 
     return (
         <div className="home-container">
@@ -129,6 +156,8 @@ function Home() {
                                             <span className="article-date">{new Date(article.publishedAt).toLocaleDateString()}</span>
                                         </div>
                                         <p className="article-description">{article.description}</p>
+                                    </div>
+                                </a>
                                     <div className="article-actions">
                                         <a href={article.url} className="read-more" target="_blank" rel="noopener noreferrer">
                                             Read More
@@ -147,11 +176,9 @@ function Home() {
                                                 );
                                             }}
                                         >
-                                            Add To Favorites
+                                            {isFavorite(article.title) ? 'Added To Favorites' : 'Add To Favorites'}
                                         </button>
                                     </div>
-                                    </div>
-                                </a>
                             </div>
                         )
                     ))

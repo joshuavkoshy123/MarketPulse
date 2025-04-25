@@ -57,7 +57,7 @@ class StockRow extends Component {
     render() {
         return (
             <div className="list-group-item" style={{ marginBottom: 0, paddingBottom: 0 }} >
-                <div className="stock-info" onClick={() => this.props.onClick()} style={{ cursor: "pointer" }} >
+                <div className="stock-info" onClick={this.props.onClick ? () => this.props.onClick() : undefined} style={{ cursor: "pointer" }} >
                     <div className="stock-header">
                         <b className="stock-ticker">{this.props.ticker}</b> 
                         <span className="change" style={this.changeStyle()}>
