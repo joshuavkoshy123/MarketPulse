@@ -6,7 +6,7 @@ import { auth, db } from "../config/config";
 import { onAuthStateChanged } from "firebase/auth";
 
 function Home() {
-    const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
+    const API_KEY = "86f36900809b4d6cb68317eed0bca8bb";
     const url = "https://newsapi.org/v2/everything?q=";
     const [articles, setArticles] = useState([]);
     const [activeCategory, setActiveCategory] = useState("latest");
