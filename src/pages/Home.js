@@ -4,33 +4,20 @@ import { doc, setDoc, arrayUnion, onSnapshot } from "firebase/firestore";
 import React from "react";
 import { auth, db } from "../config/config";
 import { onAuthStateChanged } from "firebase/auth";
+import { fetchArticles } from "../resources/articles";
 
 function Home() {
-    const API_KEY = "86f36900809b4d6cb68317eed0bca8bb";
-    const url = "https://newsapi.org/v2/everything?q=";
     const [articles, setArticles] = useState([]);
     const [activeCategory, setActiveCategory] = useState("latest");
     const [favorites, setFavorites] = useState([]);
     const searchInput = useRef(null);
 
-    // Fetch news data
-    async function fetchData(query) {
-        try {
-            const res = await fetch(
-                `${url}${query}&language=en&domains=wsj.com,bloomberg.com,cnbc.com,ft.com,forbes.com&sortBy=publishedAt&apiKey=${API_KEY}`
-            );
-            const data = await res.json();
-            console.log(query);
-            console.log(data.articles);
-            setArticles(data.articles || []);
-            
-            // Update active category
-            setActiveCategory(query.toLowerCase());
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setArticles([]);
-        }
-    }
+    // fetch articles
+    const loadArticles = async (query) => {
+        const fetchedArticles = await fetchArticles(query);
+        setArticles(fetchedArticles);
+        setActiveCategory(query.toLowerCase());
+    };
 
     const addToFavorites = async (url, urlToImage, title, source, publishedAt, description) => {
         try {
@@ -63,7 +50,7 @@ function Home() {
 
     // Initial data fetch
     useEffect(() => {
-        fetchData("latest");
+        loadArticles("latest");
 
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -97,13 +84,13 @@ function Home() {
                 <div className="categories-left">
                     <div 
                         className={`category ${activeCategory === "latest" ? "active" : ""}`}
-                        onClick={() => fetchData("latest")}
+                        onClick={() => loadArticles("latest")}
                     >
                         latest
                     </div>
                     <div 
                         className={`category ${activeCategory === "stocks" ? "active" : ""}`}
-                        onClick={() => fetchData("stocks")}
+                        onClick={() => loadArticles("stocks")}
                     >
                         stocks
                     </div>
@@ -114,13 +101,13 @@ function Home() {
                 <div className="categories-right">
                     <div 
                         className={`category ${activeCategory === "economy" ? "active" : ""}`}
-                        onClick={() => fetchData("economy")}
+                        onClick={() => loadArticles("economy")}
                     >
                         economy
                     </div>
                     <div 
                         className={`category ${activeCategory === "real estate" ? "active" : ""}`}
-                        onClick={() => fetchData("real estate")}
+                        onClick={() => loadArticles("real estate")}
                     >
                         real estate
                     </div>
@@ -130,7 +117,7 @@ function Home() {
             <div className="search-container">
                 <form onSubmit={(e) => {
                     e.preventDefault();
-                    fetchData(searchInput.current.value);
+                    loadArticles(searchInput.current.value);
                 }}>
                     <input ref={searchInput} type="text" placeholder="Search..." className="search-input" />
                 </form>
