@@ -5,13 +5,13 @@ import { getFirestore } from "firebase/firestore";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDoUrc-8IQBIr4gUKmEvxBzAPG68DHCfWI",
-  authDomain: "marketpulse-7bf1a.firebaseapp.com",
-  projectId: "marketpulse-7bf1a",
-  storageBucket: "marketpulse-7bf1a.firebasestorage.app",
-  messagingSenderId: "289694627604",
-  appId: "1:289694627604:web:31143e72f3e08467ae3401",
-  measurementId: "G-1JKH3TFQC0"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 

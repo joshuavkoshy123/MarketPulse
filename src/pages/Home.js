@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import './styles.css';
 import { doc, setDoc, arrayUnion, onSnapshot } from "firebase/firestore";
-import React from "react";
 import { auth, db } from "../config/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { fetchArticles } from "../resources/articles";

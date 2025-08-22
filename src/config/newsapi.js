@@ -1,4 +1,4 @@
 export const newsapi = {
-    api_token: '86f36900809b4d6cb68317eed0bca8bb',
-    base_url: 'https://newsapi.org/v2/everything?q='
+    api_token: process.env.REACT_APP_NEWSAPI_KEY,
+    base_url: process.env.REACT_APP_NEWSAPI_KEY
 };
