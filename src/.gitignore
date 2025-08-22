@@ -1,5 +1,0 @@
-# Ignore backend api (for now, due to NewsAPI restrictions)
-pages/api/articles.js
-
-# Ignore secrets
-.env
